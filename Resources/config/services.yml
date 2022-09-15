@@ -1,7 +1,7 @@
 services:
     mgilet.notification:
         class: Mgilet\NotificationBundle\Manager\NotificationManager
-        arguments: ["@service_container", '@mgilet.notifiable_discovery']
+        arguments: ["@doctrine.orm.entity_manager", '@event_dispatcher', '@mgilet.notifiable_discovery', '%mgilet_notification.notification_class%']
         public: true
 
     mgilet.notifiable_discovery:
