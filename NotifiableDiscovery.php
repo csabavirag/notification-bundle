@@ -4,7 +4,7 @@ namespace Mgilet\NotificationBundle;
 
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Util\ClassUtils;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Metadata\ClassMetadata;
 
 class NotifiableDiscovery
@@ -15,7 +15,7 @@ class NotifiableDiscovery
     private $annotationReader;
 
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $em;
 
@@ -33,7 +33,7 @@ class NotifiableDiscovery
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(EntityManager $em, Reader $annotationReader)
+    public function __construct(EntityManagerInterface $em, Reader $annotationReader)
     {
         $this->annotationReader = $annotationReader;
         $this->em = $em;
