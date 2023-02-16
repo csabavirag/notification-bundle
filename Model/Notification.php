@@ -199,7 +199,7 @@ abstract class Notification implements \JsonSerializable
      * {@inheritdoc}
      * @return mixed
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return [
             'id'      => $this->getId(),
