@@ -2,11 +2,14 @@
 
 namespace Mgilet\NotificationBundle\Controller;
 
+use Mgilet\NotificationBundle\Entity\NotifiableNotification;
 use Mgilet\NotificationBundle\Entity\Notification;
+use Mgilet\NotificationBundle\Manager\NotificationManager;
 use Mgilet\NotificationBundle\NotifiableInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class NotificationController
@@ -18,13 +21,14 @@ class NotificationController extends AbstractController
      * List of all notifications
      *
      * @Route("/{notifiable}", name="notification_list", methods={"GET"})
+     * @param EntityManagerInterface $em
      * @param NotifiableInterface $notifiable
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function listAction($notifiable)
+    public function listAction(EntityManagerInterface $em, $notifiable)
     {
-        $notifiableRepo = $this->get('doctrine.orm.entity_manager')->getRepository('MgiletNotificationBundle:NotifiableNotification');
+        $notifiableRepo = $em->getRepository(NotifiableNotification::class);
         $notificationList = $notifiableRepo->findAllForNotifiableId($notifiable);
         return $this->render('@MgiletNotification/notifications.html.twig', array(
             'notificationList' => $notificationList,
@@ -36,6 +40,7 @@ class NotificationController extends AbstractController
      * Set a Notification as seen
      *
      * @Route("/{notifiable}/mark_as_seen/{notification}", name="notification_mark_as_seen", methods={"POST"})
+     * @param NotificationManager $manager
      * @param int           $notifiable
      * @param Notification  $notification
      *
@@ -47,9 +52,8 @@ class NotificationController extends AbstractController
      * @throws \Doctrine\ORM\EntityNotFoundException
      * @throws \LogicException
      */
-    public function markAsSeenAction($notifiable, $notification)
+    public function markAsSeenAction(NotificationManager $manager, $notifiable, $notification)
     {
-        $manager = $this->get('mgilet.notification');
         $manager->markAsSeen(
             $manager->getNotifiableInterface($manager->getNotifiableEntityById($notifiable)),
             $manager->getNotification($notification),
@@ -63,6 +67,7 @@ class NotificationController extends AbstractController
      * Set a Notification as unseen
      *
      * @Route("/{notifiable}/mark_as_unseen/{notification}", name="notification_mark_as_unseen", methods={"POST"})
+     * @param NotificationManager $manager
      * @param $notifiable
      * @param $notification
      *
@@ -74,9 +79,8 @@ class NotificationController extends AbstractController
      * @throws \Doctrine\ORM\EntityNotFoundException
      * @throws \LogicException
      */
-    public function markAsUnSeenAction($notifiable, $notification)
+    public function markAsUnSeenAction(NotificationManager $manager, $notifiable, $notification)
     {
-        $manager = $this->get('mgilet.notification');
         $manager->markAsUnseen(
             $manager->getNotifiableInterface($manager->getNotifiableEntityById($notifiable)),
             $manager->getNotification($notification),
@@ -90,6 +94,7 @@ class NotificationController extends AbstractController
      * Set all Notifications for a User as seen
      *
      * @Route("/{notifiable}/markAllAsSeen", name="notification_mark_all_as_seen", methods={"POST"})
+     * @param NotificationManager $manager
      * @param $notifiable
      *
      * @return JsonResponse
@@ -97,9 +102,8 @@ class NotificationController extends AbstractController
      * @throws \InvalidArgumentException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function markAllAsSeenAction($notifiable)
+    public function markAllAsSeenAction(NotificationManager $manager, $notifiable)
     {
-        $manager = $this->get('mgilet.notification');
         $manager->markAllAsSeen(
             $manager->getNotifiableInterface($manager->getNotifiableEntityById($notifiable)),
             true
