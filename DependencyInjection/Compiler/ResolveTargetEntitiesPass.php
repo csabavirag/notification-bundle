@@ -20,7 +20,7 @@ class ResolveTargetEntitiesPass implements CompilerPassInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         // Gets the notification entity defined by the user (or the default one)
         $notificationEntityClass = $container->getParameter('mgilet_notification.notification_class');
