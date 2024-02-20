@@ -18,7 +18,8 @@ use Symfony\Component\DependencyInjection\Compiler\PassConfig;
  */
 class MgiletNotificationBundle extends Bundle
 {
-    public function build(ContainerBuilder $container){
+    public function build(ContainerBuilder $container): void
+    {
         parent::build($container);
         $container->addCompilerPass(new ResolveTargetEntitiesPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 1);
     }
