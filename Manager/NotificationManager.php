@@ -679,10 +679,13 @@ class NotificationManager
      */
     private function dispatch($eventType, NotificationEvent $event)
     {
-        if ($this->dispatcher instanceof ContractsEventDispatcherInterface) {
-            $this->dispatcher->dispatch($event, MgiletNotificationEvents::ASSIGNED);
-        } else {
-            $this->dispatcher->dispatch(MgiletNotificationEvents::ASSIGNED, $event);
-        }
+        try
+        {
+            if ($this->dispatcher instanceof ContractsEventDispatcherInterface) {
+                $this->dispatcher->dispatch($event, $eventType);
+            } else {
+                $this->dispatcher->dispatch($eventType, $event);
+            }
+        } catch (\Exception) {}
     }
 }
