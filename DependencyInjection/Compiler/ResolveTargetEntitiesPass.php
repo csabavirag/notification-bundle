@@ -36,13 +36,13 @@ class ResolveTargetEntitiesPass implements CompilerPassInterface
         // Get the doctrine ResolveTargetEntityListener
         $def = $container->findDefinition('doctrine.orm.listeners.resolve_target_entity');
         // Adds the resolve_target_enitity parameter
-        $def->addMethodCall('addResolveTargetEntity', array(
-            NotificationInterface::DEFAULT_NOTIFICATION_ENTITY_CLASS, $notificationEntityClass, array()
-        ));
+        $def->addMethodCall('addResolveTargetEntity', [
+            NotificationInterface::DEFAULT_NOTIFICATION_ENTITY_CLASS, $notificationEntityClass, []
+        ]);
         // This was added due this problem
         // https://stackoverflow.com/a/46656413/7070573
         if (version_compare(Version::VERSION, '2.5.0-DEV') < 0 && !$def->hasTag('doctrine.event_listener')) {
-            $def->addTag('doctrine.event_listener', array('event' => 'loadClassMetadata'));
+            $def->addTag('doctrine.event_listener', ['event' => 'loadClassMetadata']);
         } elseif (!$def->hasTag('doctrine.event_subscriber')) {
             $def->addTag('doctrine.event_subscriber');
         }

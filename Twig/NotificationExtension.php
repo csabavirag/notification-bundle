@@ -43,12 +43,12 @@ class NotificationExtension extends AbstractExtension
      */
     public function getFunctions()
     {
-        return array(
-            new TwigFunction('mgilet_notification_render', [$this, 'render'], ['is_safe' => ['html']]),
-            new TwigFunction('mgilet_notification_count', [$this, 'countNotifications'], ['is_safe' => ['html']]),
-            new TwigFunction('mgilet_notification_unseen_count', [$this, 'countUnseenNotifications'], ['is_safe' => ['html']]),
-            new TwigFunction('mgilet_notification_generate_path', [$this, 'generatePath'], ['is_safe' => ['html']])
-        );
+        return [
+            new TwigFunction('mgilet_notification_render', $this->render(...), ['is_safe' => ['html']]),
+            new TwigFunction('mgilet_notification_count', $this->countNotifications(...), ['is_safe' => ['html']]),
+            new TwigFunction('mgilet_notification_unseen_count', $this->countUnseenNotifications(...), ['is_safe' => ['html']]),
+            new TwigFunction('mgilet_notification_generate_path', $this->generatePath(...), ['is_safe' => ['html']])
+        ];
     }
 
     /**
@@ -61,7 +61,7 @@ class NotificationExtension extends AbstractExtension
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    public function render(NotifiableInterface $notifiable, array $options = array())
+    public function render(NotifiableInterface $notifiable, array $options = [])
     {
         if (!array_key_exists('seen', $options)) {
             $options['seen'] = true;
@@ -97,9 +97,9 @@ class NotificationExtension extends AbstractExtension
         $template = array_key_exists('template', $options) ? $options['template'] : '@MgiletNotification/notification_list.html.twig';
 
         return $this->twig->render($template,
-            array(
+            [
                 'notificationList' => $notifications
-            )
+            ]
         );
     }
 
@@ -164,7 +164,7 @@ class NotificationExtension extends AbstractExtension
             case 'notification_list':
                 return $this->router->generate(
                     'notification_list',
-                    array('notifiable' => $notifiableId)
+                    ['notifiable' => $notifiableId]
                 );
                 break;
             case 'notification_mark_as_seen':
@@ -174,10 +174,10 @@ class NotificationExtension extends AbstractExtension
 
                 return $this->router->generate(
                     'notification_mark_as_seen',
-                    array(
+                    [
                         'notifiable' => $notifiableId,
                         'notification' => $notification->getId()
-                    )
+                    ]
                 );
                 break;
             case 'notification_mark_as_unseen':
@@ -187,14 +187,14 @@ class NotificationExtension extends AbstractExtension
 
                 return $this->router->generate(
                     'notification_mark_as_unseen',
-                    array(
+                    [
                         'notifiable' => $notifiableId,
                         'notification' => $notification->getId()
-                    )
+                    ]
                 );
                 break;
             case 'notification_mark_all_as_seen':
-                return $this->router->generate('notification_mark_all_as_seen', array('notifiable' => $notifiableId));
+                return $this->router->generate('notification_mark_all_as_seen', ['notifiable' => $notifiableId]);
                 break;
             default:
                 return new \InvalidArgumentException('You must provide a valid route path. Paths availables : notification_list, notification_mark_as_seen, notification_mark_as_unseen, notification_mark_all_as_seen');

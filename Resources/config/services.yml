@@ -1,4 +1,7 @@
 services:
+    mgilet.attribute_reader:
+        class: Mgilet\NotificationBundle\Annotation\AttributeReader
+
     mgilet.notification:
         class: Mgilet\NotificationBundle\Manager\NotificationManager
         arguments: ["@doctrine.orm.entity_manager", '@event_dispatcher', '@mgilet.notifiable_discovery', '%mgilet_notification.notification_class%']
@@ -6,7 +9,7 @@ services:
 
     mgilet.notifiable_discovery:
         class: Mgilet\NotificationBundle\NotifiableDiscovery
-        arguments: [ '@doctrine.orm.entity_manager', '@annotation_reader']
+        arguments: [ '@doctrine.orm.entity_manager', '@mgilet.attribute_reader' ]
         public: false
 
     mgilet.twig_extension:

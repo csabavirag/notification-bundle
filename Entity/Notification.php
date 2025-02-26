@@ -8,9 +8,9 @@ use Mgilet\NotificationBundle\Model\Notification as NotificationModel;
 /**
  * Class Notification
  *
- * @ORM\Entity
  * @package Mgilet\NotificationBundle\Entity
  */
+#[ORM\Entity]
 class Notification extends NotificationModel implements NotificationInterface
 {
 

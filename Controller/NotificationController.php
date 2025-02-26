@@ -20,26 +20,24 @@ class NotificationController extends AbstractController
     /**
      * List of all notifications
      *
-     * @Route("/{notifiable}", name="notification_list", methods={"GET"})
      * @param EntityManagerInterface $em
      * @param NotifiableInterface $notifiable
-     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function listAction(EntityManagerInterface $em, $notifiable)
+    #[Route(path: '/{notifiable}', name: 'notification_list', methods: ['GET'])]
+    public function list(EntityManagerInterface $em, $notifiable): \Symfony\Component\HttpFoundation\Response
     {
         $notifiableRepo = $em->getRepository(NotifiableNotification::class);
         $notificationList = $notifiableRepo->findAllForNotifiableId($notifiable);
-        return $this->render('@MgiletNotification/notifications.html.twig', array(
+        return $this->render('@MgiletNotification/notifications.html.twig', [
             'notificationList' => $notificationList,
             'notifiableNotifications' => $notificationList // deprecated: alias for backward compatibility only
-        ));
+        ]);
     }
 
     /**
      * Set a Notification as seen
      *
-     * @Route("/{notifiable}/mark_as_seen/{notification}", name="notification_mark_as_seen", methods={"POST"})
      * @param NotificationManager $manager
      * @param int           $notifiable
      * @param Notification  $notification
@@ -52,7 +50,8 @@ class NotificationController extends AbstractController
      * @throws \Doctrine\ORM\EntityNotFoundException
      * @throws \LogicException
      */
-    public function markAsSeenAction(NotificationManager $manager, $notifiable, $notification)
+    #[Route(path: '/{notifiable}/mark_as_seen/{notification}', name: 'notification_mark_as_seen', methods: ['POST'])]
+    public function markAsSeen(NotificationManager $manager, $notifiable, $notification): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $manager->markAsSeen(
             $manager->getNotifiableInterface($manager->getNotifiableEntityById($notifiable)),
@@ -66,7 +65,6 @@ class NotificationController extends AbstractController
     /**
      * Set a Notification as unseen
      *
-     * @Route("/{notifiable}/mark_as_unseen/{notification}", name="notification_mark_as_unseen", methods={"POST"})
      * @param NotificationManager $manager
      * @param $notifiable
      * @param $notification
@@ -79,7 +77,8 @@ class NotificationController extends AbstractController
      * @throws \Doctrine\ORM\EntityNotFoundException
      * @throws \LogicException
      */
-    public function markAsUnSeenAction(NotificationManager $manager, $notifiable, $notification)
+    #[Route(path: '/{notifiable}/mark_as_unseen/{notification}', name: 'notification_mark_as_unseen', methods: ['POST'])]
+    public function markAsUnSeen(NotificationManager $manager, $notifiable, $notification): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $manager->markAsUnseen(
             $manager->getNotifiableInterface($manager->getNotifiableEntityById($notifiable)),
@@ -93,7 +92,6 @@ class NotificationController extends AbstractController
     /**
      * Set all Notifications for a User as seen
      *
-     * @Route("/{notifiable}/markAllAsSeen", name="notification_mark_all_as_seen", methods={"POST"})
      * @param NotificationManager $manager
      * @param $notifiable
      *
@@ -102,7 +100,8 @@ class NotificationController extends AbstractController
      * @throws \InvalidArgumentException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function markAllAsSeenAction(NotificationManager $manager, $notifiable)
+    #[Route(path: '/{notifiable}/markAllAsSeen', name: 'notification_mark_all_as_seen', methods: ['POST'])]
+    public function markAllAsSeen(NotificationManager $manager, $notifiable): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $manager->markAllAsSeen(
             $manager->getNotifiableInterface($manager->getNotifiableEntityById($notifiable)),

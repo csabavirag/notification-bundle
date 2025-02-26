@@ -8,37 +8,36 @@ use Doctrine\ORM\Mapping as ORM;
  * Class NotifiableNotification
  * @package Mgilet\NotificationBundle\Entity
  *
- * @ORM\Entity(repositoryClass="Mgilet\NotificationBundle\Entity\Repository\NotifiableNotificationRepository")
  *
  */
+#[ORM\Entity(repositoryClass: \Mgilet\NotificationBundle\Entity\Repository\NotifiableNotificationRepository::class)]
 class NotifiableNotification implements \JsonSerializable
 {
     /**
      * @var integer $id
-     *
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
      */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     protected $id;
 
     /**
      * @var boolean
-     * @ORM\Column(name="seen", type="boolean")
      */
+    #[ORM\Column(name: 'seen', type: 'boolean')]
     protected $seen;
 
     /**
      * @var Notification
-     * @ORM\ManyToOne(targetEntity="Mgilet\NotificationBundle\Entity\Notification", inversedBy="notifiableNotifications", cascade={"persist"})
      */
+    #[ORM\ManyToOne(targetEntity: \Mgilet\NotificationBundle\Entity\Notification::class, inversedBy: 'notifiableNotifications', cascade: ['persist'])]
     protected $notification;
 
     /**
      * @var NotifiableEntity
-     * @ORM\ManyToOne(targetEntity="Mgilet\NotificationBundle\Entity\NotifiableEntity", inversedBy="notifiableNotifications", cascade={"persist"})
      *
      */
+    #[ORM\ManyToOne(targetEntity: \Mgilet\NotificationBundle\Entity\NotifiableEntity::class, inversedBy: 'notifiableNotifications', cascade: ['persist'])]
     protected $notifiableEntity;
 
     /**

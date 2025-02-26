@@ -9,39 +9,23 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * Class NotifiableEntity
  * @package Mgilet\NotificationBundle\Entity
- *
- * @ORM\Entity(repositoryClass="Mgilet\NotificationBundle\Entity\Repository\NotifiableRepository")
- * @UniqueEntity(fields={"identifier", "class"})
  */
+#[ORM\Entity(repositoryClass: \Mgilet\NotificationBundle\Entity\Repository\NotifiableRepository::class)]
+#[UniqueEntity(fields: ['identifier', 'class'])]
 class NotifiableEntity implements \JsonSerializable
 {
     /**
      * @var string $id
-     *
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Id
      */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Id]
     protected $id;
 
     /**
-     * @var string $identifier
-     *
-     * @ORM\Column(type="string", length=255)
-     */
-    protected $identifier;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=255)
-     */
-    protected $class;
-
-    /**
      * @var NotifiableNotification[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="Mgilet\NotificationBundle\Entity\NotifiableNotification", mappedBy="notifiableEntity",cascade={"persist"})
      */
+    #[ORM\OneToMany(targetEntity: \Mgilet\NotificationBundle\Entity\NotifiableNotification::class, mappedBy: 'notifiableEntity', cascade: ['persist'])]
     protected $notifiableNotifications;
 
     /**
@@ -49,11 +33,13 @@ class NotifiableEntity implements \JsonSerializable
      *
      * @param $identifier
      * @param $class
+     * @param string $identifier
+     * @param string $class
      */
-    public function __construct($identifier, $class)
+    public function __construct(#[ORM\Column(type: 'string', length: 255)]
+    protected $identifier, #[ORM\Column(type: 'string', length: 255)]
+    protected $class)
     {
-        $this->identifier = $identifier;
-        $this->class = $class;
         $this->notifiableNotifications = new ArrayCollection();
     }
 

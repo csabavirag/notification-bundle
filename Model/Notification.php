@@ -10,48 +10,47 @@ use Mgilet\NotificationBundle\Entity\NotifiableNotification;
  * Class Notification
  * Notifications defined in your app must implement this class
  *
- * @ORM\MappedSuperclass(repositoryClass="Mgilet\NotificationBundle\Entity\Repository\NotificationRepository")
  * @package Mgilet\NotificationBundle\Model
  */
-abstract class Notification implements \JsonSerializable
+#[ORM\MappedSuperclass(repositoryClass: \Mgilet\NotificationBundle\Entity\Repository\NotificationRepository::class)]
+abstract class Notification implements \JsonSerializable, \Stringable
 {
 
     /**
      * @var integer $id
-     *
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
      */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     protected $id;
 
     /**
      * @var \DateTime
-     * @ORM\Column(type="datetime")
      */
+    #[ORM\Column(type: 'datetime')]
     protected $date;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=4000)
      */
+    #[ORM\Column(type: 'string', length: 4000)]
     protected $subject;
     /**
      * @var string
-     * @ORM\Column(type="string", length=4000, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 4000, nullable: true)]
     protected $message;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=4000, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 4000, nullable: true)]
     protected $link;
 
     /**
      * @var NotifiableNotification[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="Mgilet\NotificationBundle\Entity\NotifiableNotification", mappedBy="notification", cascade={"persist"})
      */
+    #[ORM\OneToMany(targetEntity: \Mgilet\NotificationBundle\Entity\NotifiableNotification::class, mappedBy: 'notification', cascade: ['persist'])]
     protected $notifiableNotifications;
 
 
@@ -190,7 +189,7 @@ abstract class Notification implements \JsonSerializable
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getSubject() . ' - ' . $this->getMessage();
     }

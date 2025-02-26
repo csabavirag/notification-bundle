@@ -8,19 +8,14 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class NotificationEvent extends Event
 {
-    private $notification;
-    private $notifiable;
-
     /**
      * NotificationEvent constructor.
      *
      * @param NotificationInterface    $notification
      * @param NotifiableInterface|null $notifiable
      */
-    public function __construct(NotificationInterface $notification, NotifiableInterface $notifiable = null)
+    public function __construct(private readonly NotificationInterface $notification, private readonly ?\Mgilet\NotificationBundle\NotifiableInterface $notifiable = null)
     {
-        $this->notification = $notification;
-        $this->notifiable = $notifiable;
     }
 
     /**

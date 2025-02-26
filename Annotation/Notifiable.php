@@ -2,40 +2,18 @@
 
 namespace Mgilet\NotificationBundle\Annotation;
 
-use Doctrine\Common\Annotations\Annotation;
-
-/**
- * Class Notifiable
- * @package Mgilet\NotificationBundle\Annotation
- *
- * @Annotation
- * @Annotation\Target("CLASS")
- */
+#[\Attribute(\Attribute::TARGET_CLASS)]
 class Notifiable
 {
-    /**
-     * @Required()
-     * @var string
-     */
-    public $name;
+    private string $name;
 
-    /**
-     * @return mixed
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param mixed $name
-     *
-     * @return Notifiable
-     */
-    public function setName($name)
+    public function __construct(string $name)
     {
         $this->name = $name;
+    }
 
-        return $this;
+    public function getName(): string
+    {
+        return $this->name;
     }
 }

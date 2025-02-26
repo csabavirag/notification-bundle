@@ -2,23 +2,11 @@
 
 namespace Mgilet\NotificationBundle;
 
-use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
-use Metadata\ClassMetadata;
 
 class NotifiableDiscovery
 {
-    /**
-     * @var Reader
-     */
-    private $annotationReader;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
     /**
      * @var array
      */
@@ -33,10 +21,8 @@ class NotifiableDiscovery
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(EntityManagerInterface $em, Reader $annotationReader)
+    public function __construct(private readonly EntityManagerInterface $em, private readonly \Mgilet\NotificationBundle\Annotation\AttributeReader $attributeReader)
     {
-        $this->annotationReader = $annotationReader;
-        $this->em = $em;
         $this->discoverNotifiables();
     }
 
@@ -57,10 +43,10 @@ class NotifiableDiscovery
     public function getNotifiableName(NotifiableInterface $notifiable)
     {
         // fixes the case when the notifiable is a proxy
-        $class = ClassUtils::getRealClass(get_class($notifiable));
-        $annotation = $this->annotationReader->getClassAnnotation(new \ReflectionClass($class), 'Mgilet\NotificationBundle\Annotation\Notifiable');
-        if ($annotation) {
-            return $annotation->getName();
+        $class = ClassUtils::getRealClass($notifiable::class);
+        $attributes = $this->attributeReader->getClassAttributes($class, \Mgilet\NotificationBundle\Annotation\Notifiable::class);
+        if (!empty($attributes)) {
+            return $attributes[0]->getName();
         }
 
         return null;
@@ -75,12 +61,13 @@ class NotifiableDiscovery
         /** @var ClassMetadata[] $entities */
         $entities = $this->em->getMetadataFactory()->getAllMetadata();
         foreach ($entities as $entity) {
-            $class = $entity->name;
-            $annotation = $this->annotationReader->getClassAnnotation(new \ReflectionClass($class), 'Mgilet\NotificationBundle\Annotation\Notifiable');
-            if ($annotation) {
-                $this->notifiables[$annotation->getName()] = [
-                    'class' => $entity->name,
-                    'annotation' => $annotation,
+            $class = $entity->getName();
+            $attributes = $this->attributeReader->getClassAttributes($class, \Mgilet\NotificationBundle\Annotation\Notifiable::class);
+
+            if (!empty($attributes)) {
+                $this->notifiables[$attributes[0]->getName()] = [
+                    'class' => $class,
+                    'attribute' => $attributes[0],
                     'identifiers' => $entity->getIdentifier()
                 ];
             }
